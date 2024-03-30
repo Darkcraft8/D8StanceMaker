@@ -1,0 +1,15 @@
+[
+  {
+    "op": "add",
+    "path": "/items/d8spmcce:stance_maker",
+    "value": {
+      "label": "Stance Maker",
+      "icon": "/d8spmcce/texture/interface/stance_maker/icon.png",
+      "weight": -1000,
+      "action": [
+        "pane",
+        "/d8spmcce/scripts/interface/stance_maker/stance_maker_gui.config"
+      ]
+    }
+  }
+]
