@@ -1,11 +1,11 @@
 {
+  "version" : "Release 1.5",
+  "tags" : "Miscellaneous|Furniture and Objects|In-Game Tools",
   "author" : "Darkcraft8",
   "description" : "...",
-  "friendlyName" : "Darkcraft8 Stance Maker",
-  "link" : "steam://url/CommunityFilePage/3049125004",
   "name" : "D8StanceMaker",
   "priority" : 0,
+  "friendlyName" : "Darkcraft8 Stance Maker",
   "steamContentId" : "3049125004",
-  "tags" : "Miscellaneous|Furniture and Objects|In-Game Tools",
-  "version" : "Release 1.0"
+  "link" : "steam://url/CommunityFilePage/3049125004"
 }

@@ -4,6 +4,8 @@ require "/scripts/util.lua"
 
 function init()
     pane_config = config.getParameter("humanoid_config")
+    stance_maker_option = root.assetJson("/d8spmcce/scripts/interface/stance_maker/stance_maker_config.json")
+    self.currentOption = "meleeWeapon.lua"
     self.twohanded = false
     if self.weapon_x == nil then
         self.weapon_x = 0
@@ -23,10 +25,10 @@ function init()
         self.weapon_path = widget.getText("tab_default.weapon_path")
     end
 
-    if widget.getText("tab_default.slash_path") == "" then
+    if widget.getText("tab_hitbox.slash_path") == "" then
         self.slash_path = "/assetmissing.png"
     else
-        self.slash_path = widget.getText("tab_default.slash_path")
+        self.slash_path = widget.getText("tab_hitbox.slash_path")
     end
 
     if self.hitbox_offset == nil then
@@ -72,6 +74,11 @@ function init()
     
     self.canvas = widget.bindCanvas("Dummy")
 
+    self.hitboxDefaultAngle = stance_maker_option[self.currentOption]["hitboxDefaultAngle"]
+    if self.hitboxDefaultAngle == "math.pi/2" then
+        self.hitboxDefaultAngle = math.pi/2
+    end
+    sb.logInfo("hitboxDefaultAngle = %s", self.hitboxDefaultAngle)
     hitbox_init()
 end
 
@@ -101,16 +108,16 @@ function render_canvas()
     end
 
     self.canvas:drawImageDrawable(self.mannequin_pants_path, {self.dummy_position[1] + self.dummy_offset[1], self.dummy_position[2] + self.dummy_offset[2]},  1, color)
-    self.canvas:drawImageDrawable(self.slash_path, {self.new_slash_position[1] + self.dummy_offset[1], (self.new_slash_position[2] + self.dummy_offset[2]) - (2.5 * 8)},  1, color, self.weapon_angle_value + ((math.pi/180) * 90))
+    self.canvas:drawImageDrawable(self.slash_path, {(self.new_slash_position[1] + self.dummy_offset[1]), (self.new_slash_position[2] + self.dummy_offset[2])},  1, color, self.weapon_angle_value + (math.pi/2))
     self.canvas:drawImageDrawable(self.mannequin_head_path, {self.dummy_position[1] + self.dummy_offset[1], self.dummy_position[2] + self.dummy_offset[2]},  1, color)
     self.canvas:drawImageDrawable(self.mannequin_body_path, {self.dummy_position[1] + self.dummy_offset[1], self.dummy_position[2] + self.dummy_offset[2]},  1, color)
     self.canvas:drawImageDrawable(self.weapon_path, {self.new_weapon_position[1] + self.dummy_offset[1], self.new_weapon_position[2] + self.dummy_offset[2]},  1, color, self.weapon_angle_value)
     self.canvas:drawImageDrawable(self.farm_full,   {self.f_arm_position[1] + self.dummy_offset[1], self.f_arm_position[2] + self.dummy_offset[2]},  1, color, self.f_arm_angle)
     self.canvas:drawImageDrawable(self.rotation_point_image, {self.weapon_position[1] + self.dummy_offset[1], self.weapon_position[2] + self.dummy_offset[2]}, 1, color)
     hitbox = poly.scale(hitbox, 8)
-    hitbox = poly.rotate(hitbox, ((math.pi/180) * 90))
     hitbox = poly.rotate(hitbox, self.weapon_angle_value)
-    hitbox = poly.translate(hitbox, {( (self.new_slash_position[1] + self.dummy_offset[1]) ), ( (self.new_slash_position[2] + self.dummy_offset[2]) - (2.5 * 8) ) })
+    hitbox = poly.rotate(hitbox, (math.pi/2))
+    hitbox = poly.translate(hitbox, {(self.new_slash_position[1] + self.dummy_offset[1]), (self.new_slash_position[2] + self.dummy_offset[2])})
     self.canvas:drawPoly(hitbox, {255, 255, 0, 255}, 1)
 end
 
@@ -120,7 +127,7 @@ function update()
 end
 
 function hitbox_init()
-    hitbox_populate_list()
+    hb_clear()
 end
 
 function hitbox_populate_list()
@@ -186,10 +193,10 @@ function hb_add()
 end
 
 function hb_save()
-    self.current_HB_Value[1] = tonumber(widget.getText("tab_hitbox.hitbox_value_1"))
-    self.current_HB_Value[2] = tonumber(widget.getText("tab_hitbox.hitbox_value_2"))
+        self.current_HB_Value[1] = tonumber(widget.getText("tab_hitbox.hitbox_value_1"))
+        self.current_HB_Value[2] = tonumber(widget.getText("tab_hitbox.hitbox_value_2"))
 
-    if self.current_HB_Value[1] ~= nil and self.current_HB_Value[2] ~= nil and self.current_HB_Index ~= nil then        
+    if self.current_HB_Value[1] ~= nil and self.current_HB_Value[2] ~= nil and self.current_HB_Index ~= nil then
         table.remove(self.hitbox, self.current_HB_Index)
         table.insert(self.hitbox, self.current_HB_Index, {self.current_HB_Value[1], self.current_HB_Value[2]})
         hitbox_populate_list()
@@ -205,6 +212,14 @@ function hb_remove()
     end
 end
 
+function hb_clear()    
+    self.hitbox = {}
+    self.current_HB_Select = nil
+    self.current_HB_Value = {0, 0}
+    self.current_HB_Index = nil
+    hitbox_populate_list()
+end
+
 function confirm_box()
     if widget.hasFocus("tab_default.weapon_path") then
         if widget.getText("tab_default.weapon_path") ~= "" then
@@ -214,9 +229,9 @@ function confirm_box()
         end
     end
 
-    if widget.hasFocus("tab_default.slash_path") then
-        if widget.getText("tab_default.slash_path") ~= "" then
-            self.slash_path = widget.getText("tab_default.slash_path")
+    if widget.hasFocus("tab_hitbox.slash_path") then
+        if widget.getText("tab_hitbox.slash_path") ~= "" then
+            self.slash_path = widget.getText("tab_hitbox.slash_path")
         else
             self.slash_path = "/assetmissing.png"
         end
@@ -247,7 +262,7 @@ function confirm_box()
     widget.blur("tab_default.image_position_value_x")
     widget.blur("tab_default.image_position_value_y")
     widget.blur("tab_default.weapon_path")
-    widget.blur("tab_default.slash_path")
+    widget.blur("tab_hitbox.slash_path")
     widget.blur("tab_hitbox.hitbox_value_1")
     widget.blur("tab_hitbox.hitbox_value_2")
     widget.blur("dummy_offset_value_1")
@@ -269,7 +284,7 @@ function print()
 			"<particle>"
 		},
 		animationStates = {
-		  state = "<default>"
+		  "<state>\" = \"<default>"
 		},
 		playSounds = {
 			"<sound>"
@@ -279,7 +294,7 @@ function print()
 	}
     local animationCustom = {
         damageArea = self.hitbox,
-        offset = {self.hitbox_offset[2], self.hitbox_offset[1]},
+        offset = {self.hitbox_offset[2], -self.hitbox_offset[1]},
         image = self.slash_path
 	}
 	sb.logInfo("[Stance Maker Json Dump]\n<stanceName> :\n%s", sb.printJson(stance, 1))
@@ -289,8 +304,10 @@ end
 function twohanded()
     if self.twohanded ~= true then
         self.twohanded = true
+        widget.setText("tab_default.twohanded_button", "True")
     else
         self.twohanded = false
+        widget.setText("tab_default.twohanded_button", "False")
     end
 end
 
@@ -331,7 +348,7 @@ function weapon_position()
     end
 
     if tonumber(widget.getText("tab_hitbox.hitbox_position_value_x")) ~= nil then
-        self.hitbox_offset[1] = tonumber(widget.getText("tab_hitbox.hitbox_position_value_x"))
+        self.hitbox_offset[1] = -tonumber(widget.getText("tab_hitbox.hitbox_position_value_x"))
     else
         self.hitbox_offset[1] = 0
     end
@@ -384,7 +401,7 @@ function weapon_position()
     self.new_weapon_position = self.weapon_position_rotation
     
     local a = {self.weapon_position[1], self.weapon_position[2]}
-    local b = {self.weapon_position[1] + (((self.weapon_x + self.image_x + (self.hitbox_offset[1] * 8)) + 20)), self.weapon_position[2] + (((self.weapon_y + self.image_y + (self.hitbox_offset[2] * 8))))}
+    local b = {self.weapon_position[1] + (((self.weapon_x + self.image_x + (self.hitbox_offset[1] * 8)))), self.weapon_position[2] + (((self.weapon_y + self.image_y + (self.hitbox_offset[2] * 8))))}
     
     self.slash_position_rotation = {
         (math.cos(r) * (b[1]-a[1]) - math.sin(r) * (b[2]-a[2]) + a[1]),
@@ -400,7 +417,7 @@ function clear_weapon()
 end
 
 function clear_slash()
-    widget.setText("tab_default.slash_path", "")
+    widget.setText("tab_hitbox.slash_path", "")
     self.slash_path = "/assetmissing.png"
 end
 

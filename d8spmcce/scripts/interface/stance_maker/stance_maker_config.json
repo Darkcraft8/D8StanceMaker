@@ -1,0 +1,8 @@
+{
+    "shield.lua" : {
+        "hitboxDefaultAngle" : 0
+    },
+    "meleeWeapon.lua" : {
+        "hitboxDefaultAngle" : "math.pi/2"
+    }
+}
