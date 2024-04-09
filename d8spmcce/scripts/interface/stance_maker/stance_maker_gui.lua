@@ -284,7 +284,7 @@ function print()
 			"<particle>"
 		},
 		animationStates = {
-		  "<state>\" = \"<default>"
+		    state = "<default>"
 		},
 		playSounds = {
 			"<sound>"
@@ -332,10 +332,10 @@ function weapon_position()
     end
 
     if tonumber(widget.getText("tab_default.weapon_position_value_x")) ~= nil then
-        self.weapon_x = tonumber(widget.getText("tab_default.weapon_position_value_x")) * 8
+        self.weapon_x = 3 + tonumber(widget.getText("tab_default.weapon_position_value_x")) * 8
 		self.weapon_x_angle = tonumber(widget.getText("tab_default.weapon_position_value_x"))
     else
-        self.weapon_x = 0
+        self.weapon_x = 3
 		self.weapon_x_angle = 0
     end
 
