@@ -1,14 +1,14 @@
 [
   {
     "op": "add",
-    "path": "/items/d8spmcce:stance_maker",
+    "path": "/items/d8spmcce:legacy_stance_maker",
     "value": {
-      "label": "Stance Maker",
+      "label": "Legacy Stance Maker",
       "icon": "/d8spmcce/texture/interface/stance_maker/icon.png",
       "weight": -1000,
       "action": [
         "pane",
-        "/d8spmcce/scripts/interface/stance_maker/stance_maker_gui.config"
+        "/d8spmcce/scripts/interface/stance_maker/legacy_stance_maker_gui.config"
       ]
     }
   }
