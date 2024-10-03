@@ -9,7 +9,7 @@
 # Info
   Precision/1to1 render = 95%
   
-      "a few thing are not 100% precise but it good enough to use"
+  a few thing are not 100% precise but it good enough to use
 
 # Todo - in priority order
   Tutorial
