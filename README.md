@@ -9,5 +9,7 @@
   Precision/1to1 render = 95% 
     "a few thing are not 100% precise but it good enough to use"
 
-# Todo
+# Todo - in priority order
   Tutorial
+  Finishing a few missing features
+  A Succesor Pane that more precise and with more capability
